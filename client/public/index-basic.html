@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listopia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+    <h1 class="text-2xl font-bold mb-4">Listopia</h1>
+    <button id="fetchBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Fetch Lists</button>
+    <div id="lists" class="mt-4"></div>
+
+    <script>
+        const API_BASE_URL = 'https://cd82-85-203-36-113.ngrok-free.app'; // Replace with your actual ngrok URL
+
+        document.getElementById('fetchBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/lists`, {
+                    headers: {
+                        'ngrok-skip-browser-warning': 'true'
+                    }
+                });
+                const lists = await response.json();
+                const listsDiv = document.getElementById('lists');
+                listsDiv.innerHTML = lists.map(list => `
+                    <div class="bg-white p-4 mb-4 rounded shadow">
+                        <h2 class="font-bold">${list.title}</h2>
+                        <ul>
+                            ${list.items.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching lists:', error);
+                document.getElementById('lists').innerHTML = `<p class="text-red-500">Error fetching lists: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
